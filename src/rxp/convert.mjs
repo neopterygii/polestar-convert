@@ -1078,12 +1078,15 @@ function levelsOf(quests, data) {
 
 // Where the guide sits in Polestar's menu: RXP's dungeon quest guides under
 // Dungeons, each other RXP group in a folder of its own ("RXP Forever Dungeon Guide").
-function menuPlace(group, subgroup) {
+// `suggested` false: a parallel route (survival, dungeon) keeps its folder under Miscellaneous,
+// so Polestar suggests from the main route only (it suggests every Leveling guide of a pack
+// that fits the character's level).
+function menuPlace(group, subgroup, suggested = true) {
 	const sub = String(subgroup || "").replace(/<<.*$/, "").trim();
 	const name = String(group || "").replace(/<<.*$/, "").replace(/\(([AH])\)/g, "").replace(/^(RestedXP|RXP)\s+/i, "").replace(/\s+/g, " ").trim();
 	if (!name) return { category: "Leveling" };
 	if (/dungeon quest/i.test(name)) return { category: "Dungeons" };
-	return { category: "Leveling", folder: `RXP ${name}${sub ? " · " + sub : ""}` };
+	return { category: suggested ? "Leveling" : "Miscellaneous", folder: `RXP ${name}${sub ? " · " + sub : ""}` };
 }
 
 // The races a header's `<<` line limits a guide to. "<< Alliance !NightElf" names every
@@ -1181,7 +1184,7 @@ export function convertGuide(parsed, data, opts) {
 			|| (/\bEndgame\b/i.test(String(parsed.header.group || "")) ? "60-60" : null),
 		zone,
 		defaultMap,
-		...menuPlace(parsed.header.group, parsed.header.subgroup),
+		...menuPlace(parsed.header.group, parsed.header.subgroup, opts.suggested !== false),
 		sourceSteps: parsed.steps.length,
 		steps,
 	};

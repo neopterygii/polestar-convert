@@ -11,7 +11,8 @@ machine that made them: nothing here ships guide content.
 |---|---|---|
 | Polestar version | the published page's pin | the newest release tag, built locally (`tools/update-local.sh`) |
 | Loading | one addon, every guide in memory | `pack.json` `"load": "on-demand"`: a small core addon, each faction's guides in a part Polestar loads for that faction, a guide's steps read when it is opened |
-| Guide menu | RestedXP under `RXP …`, Zygor by Zygor's subfolders | every guide under its source: `RXP …`, `Zygor Leveling`, `Zygor Dungeons`, `Zygor Professions · …` |
+| Guide menu | RestedXP under `RXP …`, Zygor by Zygor's subfolders | every guide under its source: `RXP …`, `Zygor Leveling 20-30` (by level band), `Zygor Dungeons`, `Zygor Professions · …` |
+| Suggestions | every RestedXP route is a Leveling guide, so Polestar suggests from all of them at once | RestedXP's main route and Zygor's leveling chapters are Leveling; RestedXP's survival and dungeon routes are listed under Miscellaneous and never suggested |
 | Reports | per source, what was dropped or softened | also `compare.txt` and `compare.json`: each route beside Polestar's own leveling guides |
 | `npm test` | `node --test test/` (fails on Node 24.22) | `node --test "test/*.test.mjs"` |
 

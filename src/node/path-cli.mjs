@@ -190,6 +190,8 @@ export async function run(a) {
 		const routesBy = {};
 		for (const run of Object.values(r.runs)) for (const g of run.guides) {
 			const route = routeOf(g.text);
+			// Leveling routes: the Leveling guides, and RestedXP's parallel routes (survival, dungeon).
+			if (route.category && route.category !== "Leveling" && !(g.route && route.category === "Miscellaneous")) continue;
 			const group = String(route.folder || "").split(" · ")[0].replace(/\s+\d+-\d+$/, "") || "Other";
 			(routesBy[group] ||= []).push(route);
 		}

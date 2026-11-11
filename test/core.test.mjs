@@ -119,7 +119,7 @@ accept A Thing##1 |goto Testville 10.0,10.0
 	const r = convertZygor({ Leveling: { horde: ZYGOR_H, alliance: "" }, Professions: { horde: prof, alliance: "" } }, data, { packId: "mine" });
 	assert.deepEqual(r.guides.map((g) => g.slug), ["h-testville-1-4", "h-testville-two-4-6", "h-professions-example-craft-farming-guides-old-rag"]);
 	assert.match(r.guides[2].text, /^category Professions\nfolder Zygor Professions · Example Craft · Farming Guides$/m);
-	assert.match(r.guides[0].text, /^category Leveling\nfolder Zygor Leveling$/m);
+	assert.match(r.guides[0].text, /^category Leveling\nfolder Zygor Leveling 1-20$/m);
 });
 
 const slot = (lua) => `<html><body><p>${btoa(lua)}</p></body></html>`;

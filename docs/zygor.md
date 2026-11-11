@@ -20,7 +20,7 @@ wizard are left out.
 
 | Zygor folder | Polestar category | Guide menu folder |
 |---|---|---|
-| Leveling Guides, chapters `(N-M)` | Leveling (Class for class quests) | `Zygor Leveling` (`Zygor Class Quests`) |
+| Leveling Guides, chapters `(N-M)` | Leveling (Class for class quests) | `Zygor Leveling 1-20`, `20-30` … by the chapter's first level (`Zygor Class Quests`) |
 | Leveling Guides, other (end-game chains) | Miscellaneous (Reputation for field duty) | `Zygor Leveling` and Zygor's subfolder |
 | Dungeon Guides | Dungeons | `Zygor Dungeons` and Zygor's subfolder |
 | Profession Guides | Professions | `Zygor Professions · Cooking · Farming Guides` |

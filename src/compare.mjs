@@ -26,7 +26,7 @@ const xpOf = (quests, id) => Number(quests[id]?.xp) || 0;
 const sum = (quests, ids) => ids.reduce((n, id) => n + xpOf(quests, id), 0);
 const fact = (quests, id, guide) => ({ id, title: quests[id]?.title || null, level: quests[id]?.level ?? null, xp: xpOf(quests, id), guide });
 
-// routes: { <source>: [routeOf of each converted guide] }; polestar: [routeOf of each of
+// routes: { <source>: [routeOf of each converted guide to compare] }; polestar: [routeOf of each of
 // Polestar's guides]; quests: Polestar's quests.json. -> per source and faction, over the
 // leveling guides: the quests handed in and their XP on each side, the quests only one side
 // hands in (most XP first, with the guide that does), and per converted guide the Polestar
@@ -37,7 +37,7 @@ export function compareRoutes({ routes, polestar, quests }) {
 	for (const [source, list] of Object.entries(routes)) {
 		out[source] = {};
 		for (const faction of ["Alliance", "Horde"]) {
-			const mine = list.filter((g) => isLeveling(g) && factionsOf(g).includes(faction) && g.turnin.length);
+			const mine = list.filter((g) => factionsOf(g).includes(faction) && g.turnin.length);
 			const theirs = ours.filter((g) => factionsOf(g).includes(faction) && g.turnin.length);
 			if (!mine.length || !theirs.length) continue;
 			const where = (gs) => { const m = new Map(); for (const g of gs) for (const id of g.turnin) if (!m.has(id)) m.set(id, g.id); return m; };

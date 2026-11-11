@@ -62,7 +62,13 @@ function placeOf(g) {
 	if (g.family === "Professions") return { category: "Professions", folder: folder("Professions") };
 	if (g.family === "Reputations") return { category: "Reputation", folder: folder("Reputations") };
 	if (g.family === "Events") return { category: "Miscellaneous", folder: folder("Events") };
-	if (isChapter(g)) return { category: null, folder: /Class Quests$/.test(g.name) ? "Zygor Class Quests" : "Zygor Leveling" };
+	if (isChapter(g)) {
+		if (/Class Quests$/.test(g.name)) return { category: null, folder: "Zygor Class Quests" };
+		// By level band, as the guide menu lists Polestar's own: "Zygor Leveling 1-20", "… 20-30".
+		const lo = Number((/\((\d+)-\d+\)\s*$/.exec(g.name) || [])[1]) || 1;
+		const from = Math.min(50, Math.floor(lo / 10) * 10);
+		return { category: null, folder: `Zygor Leveling ${from < 20 ? "1-20" : `${from}-${from + 10}`}` };
+	}
 	return { category: /Field Duty/.test(g.name) ? "Reputation" : "Miscellaneous", folder: folder(g.family || "Guides") };
 }
 
