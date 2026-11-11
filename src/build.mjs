@@ -35,7 +35,9 @@ export async function buildAddons({ read, paths, readData, manifest, Compiler, p
 	}
 	const compiler = new Compiler(JSON.stringify(texts), (await readData("tables/instances.json")) ?? "", (await readData("tables/areas.json")) ?? "");
 	compiler.setSpellNames((await readData("tables/spell-names.json")) ?? "[]");
-	const packDiags = JSON.parse(compiler.setPack(packJson({ ...pack, version: packVersion(Object.fromEntries(Object.entries(runs).map(([s, r]) => [s, r.version]))) }), null, manifest.iface));
+	// A pack of whole guide addons is large: asked to load on demand. A compiler older than
+	// that ignores the key with a warning, dropped here.
+	const packDiags = JSON.parse(compiler.setPack(packJson({ load: "on-demand", ...pack, version: packVersion(Object.fromEntries(Object.entries(runs).map(([s, r]) => [s, r.version]))) }), null, manifest.iface)).filter((d) => !/unknown key `load`/.test(d.message));
 	const packErrors = lintErrors(packDiags);
 	if (packErrors.length) return { runs, errors: packErrors, warnings: packDiags.length - packErrors.length };
 	const fileOf = (g) => `guides/${g.slug}.guide`;

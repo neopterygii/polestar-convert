@@ -20,12 +20,12 @@ wizard are left out.
 
 | Zygor folder | Polestar category | Guide menu folder |
 |---|---|---|
-| Leveling Guides, chapters `(N-M)` | Leveling (Class for class quests) | by level |
-| Leveling Guides, other (end-game chains) | Miscellaneous (Reputation for field duty) | Zygor's subfolder |
-| Dungeon Guides | Dungeons | Zygor's subfolder |
-| Profession Guides | Professions | `Cooking · Farming Guides` |
-| Reputation Guides | Reputation | Zygor's subfolder |
-| Events Guides | Miscellaneous | `Events` or Zygor's subfolder |
+| Leveling Guides, chapters `(N-M)` | Leveling (Class for class quests) | `Zygor Leveling` (`Zygor Class Quests`) |
+| Leveling Guides, other (end-game chains) | Miscellaneous (Reputation for field duty) | `Zygor Leveling` and Zygor's subfolder |
+| Dungeon Guides | Dungeons | `Zygor Dungeons` and Zygor's subfolder |
+| Profession Guides | Professions | `Zygor Professions · Cooking · Farming Guides` |
+| Reputation Guides | Reputation | `Zygor Reputations` and Zygor's subfolder |
+| Events Guides | Miscellaneous | `Zygor Events` and Zygor's subfolder |
 
 A chapter keeps its slug (`h-invented-vale-1-4`); any other guide names its
 family and path (`h-dungeons-invented-hollow-quests`).

@@ -12,6 +12,8 @@ export function packIdProblem(id) {
 
 // A new pack's pack.json, with the key order Polestar's `new` writes. The guides are
 // their authors' work, so no open licence: for the player's own use.
-export function packJson({ id, title, author, version = "0.1.0" }) {
-	return JSON.stringify({ id, title, author, version, license: "Personal use: converted from guides you own" }, null, "\t") + "\n";
+// `load` "on-demand": a compiler that knows it writes each faction's guides into a part
+// Polestar loads for that faction, and every guide's steps to be read when it is opened.
+export function packJson({ id, title, author, version = "0.1.0", load }) {
+	return JSON.stringify({ id, title, author, version, license: "Personal use: converted from guides you own", ...(load ? { load } : {}) }, null, "\t") + "\n";
 }

@@ -16,6 +16,7 @@ import { findSources, runReport, SOURCES, ROUTES } from "../core.mjs";
 import { buildAddons } from "../build.mjs";
 import { addonEntries } from "../addon.mjs";
 import { packIdProblem } from "../pack.mjs";
+import { routeOf, compareRoutes, compareText } from "../compare.mjs";
 import { rxpLocales } from "../rxp/translations.mjs";
 import { folderReader, resolveLoose } from "./read.mjs";
 
@@ -181,6 +182,22 @@ export async function run(a) {
 		for (const m of run.missing || []) console.error(`missing: ${m}`);
 		const steps = run.guides.reduce((n, g) => n + g.stepsOut, 0);
 		console.log(`${SOURCE_NAMES[source]}: ${run.guides.length} guides, ${steps} steps${source === "rxp" ? ` (${routes.join(", ")})` : ""}; ${run.report.items.length} lines need a look (${join(reports, `${source}-run.txt`)})`);
+	}
+	// Beside Polestar's own guides, when the site has them: each route (a source's menu folder
+	// without its level range: "RXP Alliance", "Zygor Leveling") against Polestar's leveling guides.
+	const own = await readData("polestar-guides.json");
+	if (own) {
+		const routesBy = {};
+		for (const run of Object.values(r.runs)) for (const g of run.guides) {
+			const route = routeOf(g.text);
+			const group = String(route.folder || "").split(" · ")[0].replace(/\s+\d+-\d+$/, "") || "Other";
+			(routesBy[group] ||= []).push(route);
+		}
+		const result = compareRoutes({ routes: routesBy, polestar: JSON.parse(own), quests: JSON.parse(await readData("data/forever/quests.json")) });
+		writeFileSync(join(reports, "compare.json"), JSON.stringify(result, null, 1) + "\n");
+		writeFileSync(join(reports, "compare.txt"), compareText(result));
+		for (const [group, factions] of Object.entries(result)) for (const [faction, c] of Object.entries(factions)) console.log(`${group}, ${faction}: ${c.source.quests} quests against Polestar's ${c.polestar.quests}; ${c.onlySource.length} only here, ${c.onlyPolestar.length} only in Polestar`);
+		if (Object.values(result).some((f) => Object.keys(f).length)) console.log(`compared with Polestar's own guides: ${join(reports, "compare.txt")}`);
 	}
 	if (r.errors) {
 		for (const e of r.errors.slice(0, 50)) console.error(`${e.file}${e.line ? `:${e.line}` : ""}: ${e.message}`);

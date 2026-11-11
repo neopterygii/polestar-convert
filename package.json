@@ -10,6 +10,6 @@
 	"keywords": ["polestar", "world-of-warcraft", "wow-forever", "restedxp", "zygor", "journey", "leveling-guide"],
 	"bin": { "polestar-convert": "bin/polestar-convert.mjs" },
 	"files": ["bin/", "src/", "README.md", "LICENSE", "CHANGELOG.md"],
-	"scripts": { "test": "node --test test/" },
+	"scripts": { "test": "node --test \"test/*.test.mjs\"" },
 	"engines": { "node": ">=24" }
 }

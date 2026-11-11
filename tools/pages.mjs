@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { dataFiles, COMPILER_NAMES } from "../src/data.mjs";
 import { levelXpOf } from "../src/node/read.mjs";
+import { routeOf } from "../src/compare.mjs";
 
 function fail(message) {
 	console.error(message);
@@ -56,7 +57,10 @@ if (!existsSync(join(forever, "quests.json"))) {
 // copy below carries along; the native tables binary reads the clone's client tables.
 const wasm = join(repo, "wasm");
 step("nice", ["cargo", "build", "--target", "wasm32-unknown-unknown", "--release", "-j", "4"], wasm);
-step("mise", ["exec", "--", "wasm-bindgen", "--target", "web", "--out-dir", join(repo, "web", "forge"), "--no-typescript", "target/wasm32-unknown-unknown/release/polestar_convert_wasm.wasm"], wasm);
+// wasm-bindgen through mise (wasm/mise.toml pins it), or the one on PATH (`cargo install
+// wasm-bindgen-cli --version <wasm/Cargo.lock's>`) where mise is not installed.
+const viaMise = !spawnSync("mise", ["--version"]).error;
+step(viaMise ? "mise" : "wasm-bindgen", [...(viaMise ? ["exec", "--", "wasm-bindgen"] : []), "--target", "web", "--out-dir", join(repo, "web", "forge"), "--no-typescript", "target/wasm32-unknown-unknown/release/polestar_convert_wasm.wasm"], wasm);
 step("cargo", ["build", "--release", "--features", "native", "--bin", "tables"], wasm);
 
 rmSync(out, { recursive: true, force: true });
@@ -140,6 +144,15 @@ for (const locale of NAME_LOCALES) {
 }
 // The packs' licence notes, one after the other (each pack's differs), as names/LICENSE-DATA.txt.
 if (licences.length) writeFileSync(join(dataDir, "names", "LICENSE-DATA.txt"), licences.join("\n"));
+
+// Polestar's own guides as routes (src/compare.mjs): their headers and the quests they take
+// and hand in, for the comparison the command writes beside its reports.
+const guideFiles = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? guideFiles(join(dir, e.name)) : e.name.endsWith(".guide") ? [join(dir, e.name)] : []);
+const ownGuides = join(clone, "guides", "forever");
+if (existsSync(ownGuides)) {
+	writeFileSync(join(dataDir, "polestar-guides.json"), JSON.stringify(guideFiles(ownGuides).sort().map((f) => routeOf(readFileSync(f, "utf8")))) + "\n");
+	files.push("polestar-guides.json");
+}
 
 // Provenance: the clone's commit, its data build's sources (without local paths) and
 // whether QuestieDB went into it.

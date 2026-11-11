@@ -52,17 +52,18 @@ const parts = (name) => String(name).split("\\");
 const isChapter = (g) => g.family === "Leveling" && (/\(\d+-\d+\)\s*$/.test(g.name) || /Class Quests$/.test(g.name));
 const slugOf = (g) => isChapter(g) ? `${g.side}-${slugify(parts(g.name).pop())}` : `${g.side}-${slugify(g.family)}-${slugify(parts(g.name).slice(1).join(" "))}`;
 
-// Polestar's guide menu: the category of a guide, and its folder (Zygor's folders between
-// the top one and the guide: "Cooking · Farming Guides").
+// Polestar's guide menu: the category of a guide, and its folder: "Zygor" and the kind, then
+// Zygor's folders between the top one and the guide ("Zygor Professions · Cooking · Farming
+// Guides"), so a source's guides are listed together and apart from other packs'.
 function placeOf(g) {
 	const mid = parts(g.name).slice(1, -1);
-	const folder = mid.length ? mid.join(" · ") : null;
-	if (g.family === "Dungeons") return { category: "Dungeons", folder };
-	if (g.family === "Professions") return { category: "Professions", folder };
-	if (g.family === "Reputations") return { category: "Reputation", folder };
-	if (g.family === "Events") return { category: "Miscellaneous", folder: folder || "Events" };
-	if (isChapter(g)) return { category: null, folder: null };
-	return { category: /Field Duty/.test(g.name) ? "Reputation" : "Miscellaneous", folder };
+	const folder = (kind) => [`Zygor ${kind}`, ...mid].join(" · ");
+	if (g.family === "Dungeons") return { category: "Dungeons", folder: folder("Dungeons") };
+	if (g.family === "Professions") return { category: "Professions", folder: folder("Professions") };
+	if (g.family === "Reputations") return { category: "Reputation", folder: folder("Reputations") };
+	if (g.family === "Events") return { category: "Miscellaneous", folder: folder("Events") };
+	if (isChapter(g)) return { category: null, folder: /Class Quests$/.test(g.name) ? "Zygor Class Quests" : "Zygor Leveling" };
+	return { category: /Field Duty/.test(g.name) ? "Reputation" : "Miscellaneous", folder: folder(g.family || "Guides") };
 }
 
 // The guides a Classic Era character can play: not the Season of Discovery ones (shown only
