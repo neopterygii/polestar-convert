@@ -36,8 +36,10 @@ if [ -z "$remote" ]; then
 	remote="${remote:-origin}"
 fi
 say "Polestar's tags from $remote"
-git -C "$clone" fetch -q --tags "$remote"
-[ -n "$tag" ] || tag="$(git -C "$clone" tag -l 'v[0-9]*' --sort=-v:refname | head -n 1)"
+# The newest release tag that remote has: a clone may hold other remotes' tags (a fork's own).
+[ -n "$tag" ] || tag="$(git -C "$clone" ls-remote --tags --refs "$remote" 'v[0-9]*' | sed 's#.*refs/tags/##' | sort -V | tail -n 1)"
+[ -n "$tag" ] || { echo "$remote has no release tag" >&2; exit 1; }
+git -C "$clone" fetch -q "$remote" "refs/tags/$tag:refs/tags/$tag"
 sha="$(git -C "$clone" rev-parse "$tag^{commit}")"
 checkout="$clone-$tag"
 echo "$tag ($sha) -> $checkout"
