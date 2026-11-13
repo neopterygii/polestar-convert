@@ -39,8 +39,10 @@ say "Polestar's tags from $remote"
 # The newest release tag that remote has: a clone may hold other remotes' tags (a fork's own).
 [ -n "$tag" ] || tag="$(git -C "$clone" ls-remote --tags --refs "$remote" 'v[0-9]*' | sed 's#.*refs/tags/##' | sort -V | tail -n 1)"
 [ -n "$tag" ] || { echo "$remote has no release tag" >&2; exit 1; }
-git -C "$clone" fetch -q "$remote" "refs/tags/$tag:refs/tags/$tag"
-sha="$(git -C "$clone" rev-parse "$tag^{commit}")"
+# Into a ref of our own: the clone may have a tag of that name that is not Polestar's (a fork's build).
+ref="refs/polestar-convert/$remote/$tag"
+git -C "$clone" fetch -q -f "$remote" "refs/tags/$tag:$ref"
+sha="$(git -C "$clone" rev-parse "$ref^{commit}")"
 checkout="$clone-$tag"
 echo "$tag ($sha) -> $checkout"
 
